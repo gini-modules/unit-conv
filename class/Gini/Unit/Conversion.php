@@ -156,4 +156,7 @@ class Conversion {
         return $factor ?: false;
     }
 
+    public function getUnits() {
+        return array_values(those('unitconv/unit')->get('id', 'name'));
+    }
 }

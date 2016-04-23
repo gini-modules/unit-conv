@@ -36,5 +36,9 @@ class UnitConv extends \Gini\Controller\CLI {
             $toValue, $toUnit);
     }
 
-    
+    public function actionListUnits($args) {
+        $conv = \Gini\Unit\Conversion::of('nothing');
+        $units = $conv->getUnits();
+        echo implode(", ", $units)."\n";
+    }
 }

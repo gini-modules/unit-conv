@@ -10,8 +10,13 @@ list($value, $unit) = $conv->parse('100ml');
 $units = $conv->getUnits();
 ```
 
-## Add Conversion
+## Command Line
+### Make a Conversion
 ```bash
-gini unit-conv set object=liquid from=weight to=volume factor=10
 gini unit-conv convert object=liquid from=100mg to=l
+```
+
+### List Units
+```bash
+gini unit-conv list-units
 ```
