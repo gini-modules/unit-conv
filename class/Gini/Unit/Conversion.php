@@ -21,6 +21,15 @@ class Conversion {
     protected $_fromUnit;
     protected $_toUnit;
 
+    private $_RPC;
+    public static function getRPC() {
+        if (!$_RPC) {
+            $conf = \Gini\Config::get('app.rpc')['unitconv'];
+            $_RPC = new \Gini\RPC($conf['url'] ?: strval($conf));
+        }
+        return $_RPC;
+    }
+
     public static function of($object) {
         return new \Gini\Unit\Conversion($object);
     }
@@ -110,8 +119,18 @@ class Conversion {
      * @author Jia Huang
      */
     public function getDimension($unit) {
-        $u = a('unitconv/unit', ['name'=>$unit]);
-        return $u->id ? $u->dimension : false;
+        $cache = \Gini\Cache::of('unitconv');
+        foreach ($this->_unitInfo as $object) {
+            $key = "uniconv.dimension[$object-$unit]";
+            $dimension = $cache->get($key);
+            if (is_null($dimension)) {
+                $rpc = self::getRPC();
+                $dimension = $rpc->UnitConv->getDimension($object, $unit);
+                $cache->set($key, $dimension, 86400);
+            }
+            if ($dimension) break;
+        }
+        return $dimension;
     }
 
     /**
@@ -123,27 +142,18 @@ class Conversion {
      * @author Jia Huang
      */
     public function getUnitFactor($unit) {
-        $u = a('unitconv/unit', ['name'=>$unit]);
-        return $u->id ? $u->factor : false;
-    }
-
-    public function getConvertibleFactors($dimension) {
-        $factors = [];
+        $cache = \Gini\Cache::of('unitconv');
         foreach ($this->_unitInfo as $object) {
-            $factors += 
-                (array) those('unitconv/conv')
-                    ->whose('object')->is($object)
-                    ->whose('from')->is($dimension)
-                    ->get('to', 'factor');
-
-            $factors += array_map(function($f) { return 1 / $f; }, 
-                (array) those('unitconv/conv')
-                    ->whose('object')->is($object)
-                    ->whose('to')->is($dimension)
-                    ->get('from', 'factor')
-                );
+            $key = "uniconv.ufactor[$object-$unit]";
+            $factor = $cache->get($key);
+            if (is_null($factor)) {
+                $rpc = self::getRPC();
+                $factor = $rpc->UnitConv->getUnitFactor($object, $unit);
+                $cache->set($key, $factor, 86400);
+            }
+            if ($factor) break;
         }
-        return $factors;
+        return $factor;
     }
 
     /**
@@ -157,28 +167,33 @@ class Conversion {
      */
     public function getDimensionFactor($from, $to) {
         if ($from == $to) {
-            return 1.00;
+            return 1;
         }
 
-        $find = function($from, $to, $factor) use (&$find) {
-            $factors = $this->getConvertibleFactors($from);
-            if (isset($factors[$to])) {
-                return $factor * $factors[$to];
-            } else {
-                foreach ($factors as $d => $f) {
-                    $nfactor = $find($d, $to, $factor * $f);
-                    if ($nfactor) {
-                        return $nfactor;
-                    }
-                }
+        $cache = \Gini\Cache::of('unitconv');
+        foreach ($this->_unitInfo as $object) {
+            $key = "uniconv.dfactor[$object-$from-$to]";
+            $factor = $cache->get($key);
+            if (is_null($factor)) {
+                $rpc = self::getRPC();
+                $factor = $rpc->UnitConv->getDimensionFactor($object, $from, $to);
+                $cache->set($key, $factor, 86400);
             }
-            return false;
-        };
+            if ($factor) break;
+        }
 
-        return $find($from, $to, 1);
+        return $factor;
     }
 
     public function getUnits() {
-        return a('unitconv/unit')->getUnits();
+        $cache = \Gini\Cache::of('unitconv');
+        $key = 'uniconv.units';
+        $units = $cache->get($key);
+        if (is_null($units)) {
+            $rpc = self::getRPC();
+            $units = $rpc->UnitConv->getUnits();
+            $cache->set($key, $units, 86400);
+        }
+        return $units;
     }
 }
