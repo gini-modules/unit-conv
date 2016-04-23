@@ -21,6 +21,8 @@ class Conversion {
     protected $_fromUnit;
     protected $_toUnit;
 
+    protected static $TIMEOUT = 86400;
+
     private $_RPC;
     public static function getRPC() {
         if (!$_RPC) {
@@ -126,7 +128,7 @@ class Conversion {
             if (is_null($dimension)) {
                 $rpc = self::getRPC();
                 $dimension = $rpc->UnitConv->getDimension($object, $unit);
-                $cache->set($key, $dimension, 86400);
+                $cache->set($key, $dimension, static::$TIMEOUT);
             }
             if ($dimension) break;
         }
@@ -149,7 +151,7 @@ class Conversion {
             if (is_null($factor)) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getUnitFactor($object, $unit);
-                $cache->set($key, $factor, 86400);
+                $cache->set($key, $factor, static::$TIMEOUT);
             }
             if ($factor) break;
         }
@@ -177,7 +179,7 @@ class Conversion {
             if (is_null($factor)) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getDimensionFactor($object, $from, $to);
-                $cache->set($key, $factor, 86400);
+                $cache->set($key, $factor, static::$TIMEOUT);
             }
             if ($factor) break;
         }
@@ -192,7 +194,7 @@ class Conversion {
         if (is_null($units)) {
             $rpc = self::getRPC();
             $units = $rpc->UnitConv->getUnits();
-            $cache->set($key, $units, 86400);
+            $cache->set($key, $units, static::$TIMEOUT);
         }
         return $units;
     }
