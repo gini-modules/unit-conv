@@ -136,7 +136,7 @@ class Conversion
             return false;
         }
 
-        $factor = $factorDimension * $factorFromUnit * $factorToUnit;
+        $factor = $factorDimension * $factorFromUnit / $factorToUnit;
 
         return $this->_value * $factor;
     }
@@ -172,7 +172,10 @@ class Conversion
 
     /**
      * 获取测量单位在自己维度上的系数，
-     * 比如 getUnitFactor('g') = 1, getUnitFactor('kg') = 1000, getUnitFactor('mg') = 0.001.
+     * 比如 
+     * getUnitFactor('g') = 1, 
+     * getUnitFactor('kg') = 1000, 
+     * getUnitFactor('mg') = 0.001.
      *
      * @param string $unit
      *

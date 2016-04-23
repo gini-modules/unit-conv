@@ -33,7 +33,7 @@ class UnitConv extends \Gini\Controller\CLI
         printf("\e[33m%s\e[0m = \e[33m%f\e[0m * \e[1m%f\e[0m %s/%s *  \e[1m%f\e[0m %s/%s * \e[1m%f\e[0m %s/%s = \e[32m%f%s\e[0m\n", $params['from'], $fromValue,
             $factorFromUnit, $fromDimension, $fromUnit,
             $factorDimension, $toDimension, $fromDimension,
-            $factorToUnit, $toUnit, $toDimension,
+            1 / $factorToUnit, $toUnit, $toDimension,
             $toValue, $toUnit);
     }
 
