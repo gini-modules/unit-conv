@@ -17,7 +17,7 @@
 	unitconv:
 	  driver: Redis
 	  options:
-	    key_prefix: ntu-orders-
+	    key_prefix: unitconv-
 	    servers:
 	      default:
 		     host: 127.0.0.1
