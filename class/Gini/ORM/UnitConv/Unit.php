@@ -10,4 +10,8 @@ class Unit extends \Gini\ORM\Object
     public $dimension = 'string:20';
     public $name = 'string:10';
     public $factor = 'double';
+    
+    public function getUnits() {
+        return array_values(those('unitconv/unit')->get('id', 'name'));
+    }
 }

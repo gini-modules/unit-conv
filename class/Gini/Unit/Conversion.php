@@ -127,36 +127,58 @@ class Conversion {
         return $u->id ? $u->factor : false;
     }
 
+    public function getConvertibleFactors($dimension) {
+        $factors = [];
+        foreach ($this->_unitInfo as $object) {
+            $factors += 
+                (array) those('unitconv/conv')
+                    ->whose('object')->is($object)
+                    ->whose('from')->is($dimension)
+                    ->get('to', 'factor');
+
+            $factors += array_map(function($f) { return 1 / $f; }, 
+                (array) those('unitconv/conv')
+                    ->whose('object')->is($object)
+                    ->whose('to')->is($dimension)
+                    ->get('from', 'factor')
+                );
+        }
+        return $factors;
+    }
+
     /**
      * 获取两个维度之间的换算系数, 会和指定对象的信息有关
-     * e.g. getDimensionFactor('g', ')
+     * e.g. getDimensionFactor('g', 'ml')
      *
-     * @param string $fromDimension 
-     * @param string $toDimension 
+     * @param string $from 
+     * @param string $to 
      * @return double
      * @author Jia Huang
      */
-    public function getDimensionFactor($fromDimension, $toDimension) {
-        if ($fromDimension == $toDimension) {
+    public function getDimensionFactor($from, $to) {
+        if ($from == $to) {
             return 1.00;
         }
 
-        foreach ($this->_unitInfo as $object) {
-            $c = a('unitconv/conv', ['object'=>$object, 'from'=>$fromDimension, 'to'=>$toDimension]);
-            if ($c->id) {
-                $factor = doubleval($c->factor);
-                break;
+        $find = function($from, $to, $factor) use (&$find) {
+            $factors = $this->getConvertibleFactors($from);
+            if (isset($factors[$to])) {
+                return $factor * $factors[$to];
+            } else {
+                foreach ($factors as $d => $f) {
+                    $nfactor = $find($d, $to, $factor * $f);
+                    if ($nfactor) {
+                        return $nfactor;
+                    }
+                }
             }
-            $c = a('unitconv/conv', ['object'=>$object, 'from'=>$toDimension, 'to'=>$fromDimension]);
-            if ($c->id) {
-                $factor = 1 / doubleval($c->factor);
-                break;
-            }
-        }
-        return $factor ?: false;
+            return false;
+        };
+
+        return $find($from, $to, 1);
     }
 
     public function getUnits() {
-        return array_values(those('unitconv/unit')->get('id', 'name'));
+        return a('unitconv/unit')->getUnits();
     }
 }
