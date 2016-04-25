@@ -73,7 +73,9 @@ class Conversion
         if (!is_numeric($value) || !$unit) {
             return false;
         }
-        $units = $this->getUnits();
+
+        $unit = strtolower($unit);
+        $units = array_map('strtolower', $this->getUnits());
         return in_array($unit, $units);
     }
 
@@ -98,7 +100,7 @@ class Conversion
         list($value, $unit) = $this->parse($expr);
         if ($unit) {
             $this->_value = $value;
-            $this->_fromUnit = $unit;
+            $this->_fromUnit = strtolower($unit);
         } else {
             $this->_value = null;
             $this->_fromUnit = null;
@@ -109,7 +111,7 @@ class Conversion
 
     public function to($unit)
     {
-        $this->_toUnit = $unit;
+        $this->_toUnit = strtolower($unit);
 
         $fromDimension = $this->getDimension($this->_fromUnit);
         if (!$fromDimension) {
@@ -153,6 +155,7 @@ class Conversion
      */
     public function getDimension($unit)
     {
+        $unit = strtolower($unit);
         $cache = \Gini\Cache::of('unitconv');
         foreach ($this->_unitInfo as $object) {
             $key = "dimension[$object-$unit]";
@@ -185,6 +188,7 @@ class Conversion
      */
     public function getUnitFactor($unit)
     {
+        $unit = strtolower($unit);
         $cache = \Gini\Cache::of('unitconv');
         foreach ($this->_unitInfo as $object) {
             $key = "ufactor[$object-$unit]";
