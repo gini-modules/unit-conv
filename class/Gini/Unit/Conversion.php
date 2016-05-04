@@ -160,7 +160,7 @@ class Conversion
         foreach ($this->_unitInfo as $object) {
             $key = "dimension[$object-$unit]";
             $dimension = $cache->get($key);
-            if (is_null($dimension)) {
+            if (false === $dimension) {
                 $rpc = self::getRPC();
                 $dimension = $rpc->UnitConv->getDimension($object, $unit);
                 $cache->set($key, $dimension, static::$TIMEOUT);
@@ -193,7 +193,7 @@ class Conversion
         foreach ($this->_unitInfo as $object) {
             $key = "ufactor[$object-$unit]";
             $factor = $cache->get($key);
-            if (is_null($factor)) {
+            if (false === $factor) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getUnitFactor($object, $unit);
                 $cache->set($key, $factor, static::$TIMEOUT);
@@ -227,7 +227,7 @@ class Conversion
         foreach ($this->_unitInfo as $object) {
             $key = "dfactor[$object-$from-$to]";
             $factor = $cache->get($key);
-            if (is_null($factor)) {
+            if (false === $factor) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getDimensionFactor($object, $from, $to);
                 $cache->set($key, $factor, static::$TIMEOUT);
@@ -245,7 +245,7 @@ class Conversion
         $cache = \Gini\Cache::of('unitconv');
         $key = 'units';
         $units = $cache->get($key);
-        if (is_null($units)) {
+        if (false === $units) {
             $rpc = self::getRPC();
             $units = $rpc->UnitConv->getUnits();
             $cache->set($key, $units, static::$TIMEOUT);
