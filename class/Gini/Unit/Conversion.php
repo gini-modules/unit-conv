@@ -163,6 +163,7 @@ class Conversion
             if (false === $dimension) {
                 $rpc = self::getRPC();
                 $dimension = $rpc->UnitConv->getDimension($object, $unit);
+                $dimension = ($dimension===false) ? null : $dimension;
                 $cache->set($key, $dimension, static::$TIMEOUT);
             }
             if ($dimension) {
@@ -196,6 +197,7 @@ class Conversion
             if (false === $factor) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getUnitFactor($object, $unit);
+                $factor = ($factor===false) ? null : $factor;
                 $cache->set($key, $factor, static::$TIMEOUT);
             }
             if ($factor) {
@@ -230,6 +232,7 @@ class Conversion
             if (false === $factor) {
                 $rpc = self::getRPC();
                 $factor = $rpc->UnitConv->getDimensionFactor($object, $from, $to);
+                $factor = ($factor===false) ? null : $factor;
                 $cache->set($key, $factor, static::$TIMEOUT);
             }
             if ($factor) {
@@ -248,6 +251,7 @@ class Conversion
         if (false === $units) {
             $rpc = self::getRPC();
             $units = $rpc->UnitConv->getUnits();
+            $units = ($units===false) ? null : $units;
             $cache->set($key, $units, static::$TIMEOUT);
         }
 
