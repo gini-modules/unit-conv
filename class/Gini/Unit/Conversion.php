@@ -29,7 +29,6 @@ class Conversion
             $conf = \Gini\Config::get('app.rpc')['unitconv'];
             $_RPC = new \Gini\RPC($conf['url'] ?: strval($conf));
         }
-
         return $_RPC;
     }
 
@@ -224,22 +223,17 @@ class Conversion
         if ($from == $to) {
             return 1;
         }
-
         $cache = \Gini\Cache::of('unitconv');
-        foreach ($this->_unitInfo as $object) {
-            $key = "dfactor[$object-$from-$to]";
-            $factor = $cache->get($key);
-            if (false === $factor) {
-                $rpc = self::getRPC();
-                $factor = $rpc->UnitConv->getDimensionFactor($object, $from, $to);
-                $factor = ($factor===false) ? null : $factor;
-                $cache->set($key, $factor, static::$TIMEOUT);
-            }
-            if ($factor) {
-                break;
-            }
+        $unitInfo = $this->_unitInfo;
+        $key = "dfactor[".md5(J($unitInfo))."-$from-$to]";
+        $factor = $cache->get($key);
+        $factor = false;
+        if (false === $factor) {
+            $rpc = self::getRPC();
+            $factor = $rpc->UnitConv->getDimensionFactor($unitInfo, $from, $to);
+            $factor = ($factor===false) ? null : $factor;
+            $cache->set($key, $factor, static::$TIMEOUT);
         }
-
         return $factor;
     }
 
