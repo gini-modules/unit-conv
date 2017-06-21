@@ -227,7 +227,6 @@ class Conversion
         $unitInfo = $this->_unitInfo;
         $key = "dfactor[".md5(J($unitInfo))."-$from-$to]";
         $factor = $cache->get($key);
-        $factor = false;
         if (false === $factor) {
             $rpc = self::getRPC();
             $factor = $rpc->UnitConv->getDimensionFactor($unitInfo, $from, $to);
