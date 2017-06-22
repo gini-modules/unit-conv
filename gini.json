@@ -2,7 +2,7 @@
     "id": "unit-conv",
     "name": "Unit Conversion",
     "description": "Unit Conversion Library",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "dependencies": {
         "cache": "*",
         "gini": "*"
