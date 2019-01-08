@@ -87,8 +87,10 @@ class Conversion
      */
     public function parse($expr)
     {
-        if (!preg_match('/([-0-9.]+)\s*(\S*)/', $expr, $parts)) {
-            return false;
+        if (!preg_match('/(\d+(?:\.\d+)?E(?:\+|\-)\d+)\s*(\S*)/', $expr, $parts)) {
+            if (!preg_match('/([-0-9.]+)\s*(\S*)/', $expr, $parts)) {
+                return false;
+            }
         }
 
         return [floatval($parts[1]), $parts[2]];
