@@ -2,9 +2,10 @@
     "id": "unit-conv",
     "name": "Unit Conversion",
     "description": "Unit Conversion Library",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "dependencies": {
         "cache": "*",
         "gini": "*"
-    }
+    },
+    "moduleClass": "\\Gini\\Module\\unitconv"
 }
