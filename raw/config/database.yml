@@ -1,0 +1,6 @@
+---
+unit-conv-client-local-db:
+  dsn: mysql:dbname=${UNIT_CONV_CLIENT_LOCAL_DB_NAME:=''};host=${UNIT_CONV_CLIENT_LOCAL_DB_HOST:='172.17.0.1'};port=${UNIT_CONV_CLIENT_LOCAL_DB_PORT:='3306'}
+  username: ${UNIT_CONV_CLIENT_LOCAL_DB_USER:=''}
+  password: ${UNIT_CONV_CLIENT_LOCAL_DB_PASS:=''}
+...

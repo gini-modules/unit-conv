@@ -34,6 +34,9 @@ class Conversion
 
     public static function of($object)
     {
+        if (\Gini\Config::get('unit-conv.unit-conv-client-use-agent')) {
+            return new \Gini\Unit\Conversion\Agent($object);
+        }
         return new \Gini\Unit\Conversion($object);
     }
 
