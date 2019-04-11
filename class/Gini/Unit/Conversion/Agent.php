@@ -126,7 +126,7 @@ class Agent extends \Gini\Unit\Conversion
         if ($dimensionA == $dimensionB) return 1;
         $db = self::getDB();
         $conv = $db->query('select id,factor from unitconv_conv where `object`=:obj and `from`=:from and `to`=:to', null, [
-            ':object'=> 'default',
+            ':obj'=> 'default',
             ':from'=> $dimensionA,
             ':to'=> $dimensionB
         ])->row();
@@ -134,7 +134,7 @@ class Agent extends \Gini\Unit\Conversion
             return $conv->factor;
         }
         $conv = $db->query('select id,factor from unitconv_conv where `object`=:obj and `from`=:from and `to`=:to', null, [
-            ':object'=> 'default',
+            ':obj'=> 'default',
             ':from'=> $dimensionB,
             ':to'=> $dimensionA
         ])->row();
