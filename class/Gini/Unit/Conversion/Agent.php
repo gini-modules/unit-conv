@@ -42,9 +42,9 @@ class Agent extends \Gini\Unit\Conversion
 
     /**
      * 获取测量单位在自己维度上的系数，
-     * 比如 
-     * getUnitFactor('g') = 1, 
-     * getUnitFactor('kg') = 1000, 
+     * 比如
+     * getUnitFactor('g') = 1,
+     * getUnitFactor('kg') = 1000,
      * getUnitFactor('mg') = 0.001.
      *
      * @param string $unit
@@ -95,8 +95,7 @@ class Agent extends \Gini\Unit\Conversion
         if (false === $factor) {
             $db = self::getDB();
             foreach ($objects as $object) {
-                $objsStr = $db->quote($object);
-                $convs = $db->query("select * from unitconv_conv where object = :object", null, [':object'=>$objsStr])->rows();
+                $convs = $db->query("select * from unitconv_conv where object = :object", null, [':object'=>$object])->rows();
                 foreach ($convs as $conv) {
                     $current_from = $conv->from;
                     $current_to = $conv->to;
