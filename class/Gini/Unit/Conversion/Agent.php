@@ -89,29 +89,31 @@ class Agent extends \Gini\Unit\Conversion
             return 1;
         }
         $cache = \Gini\Cache::of('unitconv');
-        $unitInfo = $this->_unitInfo;
-        $key = "dfactor[".md5(J($unitInfo))."-$from-$to]";
+        $objects = $this->_unitInfo;
+        $key = "dfactor[".md5(J($objects))."-$from-$to]";
         $factor = $cache->get($key);
         if (false === $factor) {
             $db = self::getDB();
-            $objsStr = $db->quote($unitInfo);
-            $convs = $db->query("select * from unitconv_conv where object in ({$objsStr})")->rows();
-            foreach ($convs as $conv) {
-                $current_from = $conv->from;
-                $current_to = $conv->to;
-                $current_factor = $conv->factor;
-                if ($current_from==$from && $current_to==$to) {
-                    $factor = $current_factor;
-                    break;
-                } else if ($current_from==$to && $current_to==$from) {
-                    $factor = 1 / $current_factor;
-                    break;
-                } else {
-                    if ($to==$current_to) {
-                        $from_factor = self::getDefaultFactor($from, $current_from);
-                        if ($from_factor) {
-                            $factor = $current_factor * $from_factor;
-                            break;
+            foreach ($objects as $object) {
+                $objsStr = $db->quote($object);
+                $convs = $db->query("select * from unitconv_conv where object = :object", null, [':object'=>$objsStr])->rows();
+                foreach ($convs as $conv) {
+                    $current_from = $conv->from;
+                    $current_to = $conv->to;
+                    $current_factor = $conv->factor;
+                    if ($current_from==$from && $current_to==$to) {
+                        $factor = $current_factor;
+                        break 2;
+                    } else if ($current_from==$to && $current_to==$from) {
+                        $factor = 1 / $current_factor;
+                        break 2;
+                    } else {
+                        if ($to==$current_to) {
+                            $from_factor = self::getDefaultFactor($from, $current_from);
+                            if ($from_factor) {
+                                $factor = $current_factor * $from_factor;
+                                break 2;
+                            }
                         }
                     }
                 }
