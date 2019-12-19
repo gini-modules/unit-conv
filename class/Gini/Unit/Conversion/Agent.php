@@ -106,13 +106,17 @@ class Agent extends \Gini\Unit\Conversion
                     } else if ($current_from==$to && $current_to==$from) {
                         $factor = 1 / $current_factor;
                         break 2;
-                    } else {
-                        if ($to==$current_to) {
-                            $from_factor = self::getDefaultFactor($from, $current_from);
-                            if ($from_factor) {
-                                $factor = $current_factor * $from_factor;
-                                break 2;
-                            }
+                    }
+                }
+                foreach ($convs as $conv) {
+                    $current_from = $conv->from;
+                    $current_to = $conv->to;
+                    $current_factor = $conv->factor;
+                    if ($to==$current_to) {
+                        $from_factor = self::getDefaultFactor($from, $current_from);
+                        if ($from_factor) {
+                            $tmp_factor = $current_factor * $from_factor;
+                            break 2;
                         }
                     }
                 }
