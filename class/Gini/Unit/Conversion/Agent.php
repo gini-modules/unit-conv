@@ -115,7 +115,7 @@ class Agent extends \Gini\Unit\Conversion
                     if ($to==$current_to) {
                         $from_factor = self::getDefaultFactor($from, $current_from);
                         if ($from_factor) {
-                            $tmp_factor = $current_factor * $from_factor;
+                            $factor = $current_factor * $from_factor;
                             break 2;
                         }
                     }
