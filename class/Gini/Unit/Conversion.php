@@ -47,7 +47,7 @@ class Conversion
             $implements = class_implements($object);
             if (isset($implements['Gini\Unit\Conversion\ORM'])) {
                 $unitInfo = $object->unitInfo();
-            } elseif ($object instanceof \Gini\ORM\Object) {
+            } elseif ($object instanceof \Gini\ORM\Base) {
                 $unitInfo = [$object->name().'/'.$object->id];
             } else {
                 $unitInfo = [get_class($object)];
@@ -180,9 +180,9 @@ class Conversion
 
     /**
      * 获取测量单位在自己维度上的系数，
-     * 比如 
-     * getUnitFactor('g') = 1, 
-     * getUnitFactor('kg') = 1000, 
+     * 比如
+     * getUnitFactor('g') = 1,
+     * getUnitFactor('kg') = 1000,
      * getUnitFactor('mg') = 0.001.
      *
      * @param string $unit
