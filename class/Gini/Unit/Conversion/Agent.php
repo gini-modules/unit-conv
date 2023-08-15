@@ -26,6 +26,7 @@ class Agent extends \Gini\Unit\Conversion
             $dimension = $cache->get($key);
             if (false === $dimension) {
                 $db = self::getDB();
+                $db->query('SET NAMES \'utf8\'');
                 $row = $db->query('select id,dimension from unitconv_unit where name=:name', null, [
                     ':name'=> $unit
                 ])->row();
@@ -60,6 +61,7 @@ class Agent extends \Gini\Unit\Conversion
             $factor = $cache->get($key);
             if (false === $factor) {
                 $db = self::getDB();
+                $db->query('SET NAMES \'utf8\'');
                 $row = $db->query('select id,factor from unitconv_unit where name=:name', null, [
                     ':name'=> $unit
                 ])->row();
@@ -130,6 +132,7 @@ class Agent extends \Gini\Unit\Conversion
     {
         if ($dimensionA == $dimensionB) return 1;
         $db = self::getDB();
+        $db->query('SET NAMES \'utf8\'');
         $conv = $db->query('select id,factor from unitconv_conv where `object`=:obj and `from`=:from and `to`=:to', null, [
             ':obj'=> 'default',
             ':from'=> $dimensionA,
@@ -156,6 +159,7 @@ class Agent extends \Gini\Unit\Conversion
         $units = $cache->get($key);
         if (false === $units) {
             $db = self::getDB();
+            $db->query('SET NAMES \'utf8\'');
             $rows = $db->query('select id,name from unitconv_unit')->rows();
             $units = [];
             foreach ($rows as $row) {
